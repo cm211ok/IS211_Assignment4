@@ -57,8 +57,8 @@ def binary_search_iterative(a_list, item):
                 first = midpoint + 1
 
     return found
-
-
+    
+    
 def binary_search_recursive(a_list, item):
     if len(a_list) == 0:
         return False
@@ -73,54 +73,35 @@ def binary_search_recursive(a_list, item):
                 return binary_search_recursive(a_list[midpoint + 1:], item)
 
 
+def measure_time_for_search_function(search_function, list_size):
+    total_time = 0
+    for i in range(100):  # Run 100 times for each list size
+        mylist = get_me_random_list(list_size)
+        mylist_sorted = sorted(mylist)  # Sort for Binary Search and Ordered Search
+
+        start = time.time()
+        search_function(mylist_sorted, 99999999)  # Search for a non-existent element (worst case)
+        time_spent = time.time() - start
+        total_time += time_spent
+
+    avg_time = total_time / 100
+    return avg_time
+
+
 if __name__ == "__main__":
     """Main entry point"""
-    the_size = 500
-    target_item = 99999999  # This item won't be in the list for worst-case scenario
+    list_sizes = [500, 1000, 5000]
 
-    # Initialize variables for total time
-    total_sequential_time = 0
-    total_ordered_sequential_time = 0
-    total_binary_iterative_time = 0
-    total_binary_recursive_time = 0
-
-    for i in range(100):
-        mylist = get_me_random_list(the_size)
-        # Sorting the list for ordered sequential search and binary search
-        mylist_sorted = sorted(mylist)
-
-        # Sequential Search
-        start = time.time()
-        sequential_search(mylist, target_item)
-        time_spent = time.time() - start
-        total_sequential_time += time_spent
-
-        # Ordered Sequential Search
-        start = time.time()
-        ordered_sequential_search(mylist_sorted, target_item)
-        time_spent = time.time() - start
-        total_ordered_sequential_time += time_spent
-
-        # Binary Search Iterative
-        start = time.time()
-        binary_search_iterative(mylist_sorted, target_item)
-        time_spent = time.time() - start
-        total_binary_iterative_time += time_spent
-
-        # Binary Search Recursive
-        start = time.time()
-        binary_search_recursive(mylist_sorted, target_item)
-        time_spent = time.time() - start
-        total_binary_recursive_time += time_spent
-
-    # Average times
-    avg_sequential_time = total_sequential_time / 100
-    avg_ordered_sequential_time = total_ordered_sequential_time / 100
-    avg_binary_iterative_time = total_binary_iterative_time / 100
-    avg_binary_recursive_time = total_binary_recursive_time / 100
-
-    # Print 
-    print(f"Sequential Search took {avg_sequential_time:10.7f} seconds to run, on average for a list of {the_size} elements")
-    print(f"Ordered Sequential Search took {avg_ordered_sequential_time:10.7f} seconds to run, on average for a list of {the_size} elements")
-    print(f"Binary Search Iterative took {avg_binary_iterative_time:10.7f} seconds to run, on average for a list of {the_size} elements")
-    print(f"Binary Search Recursive took {avg_binary_recursive_time:10.7f} seconds to run, on average for a list of {the_size} elements")
+    for the_size in list_sizes:
+        print(f"List size: {the_size}")
+        
+        avg_sequential_time = measure_time_for_search_function(sequential_search, the_size)
+        avg_binary_iterative_time = measure_time_for_search_function(binary_search_iterative, the_size)
+        avg_binary_recursive_time = measure_time_for_search_function(binary_search_recursive, the_size)
+        avg_ordered_sequential_time = measure_time_for_search_function(ordered_sequential_search, the_size)
+        
+        print(f"Sequential Search took {avg_sequential_time:10.7f} seconds to run, on average for a list of {the_size} elements")
+        print(f"Binary Search Iterative took {avg_binary_iterative_time:10.7f} seconds to run, on average for a list of {the_size} elements")
+        print(f"Binary Search Recursive took {avg_binary_recursive_time:10.7f} seconds to run, on average for a list of {the_size} elements")
+        print(f"Ordered Sequential Search took {avg_ordered_sequential_time:10.7f} seconds to run, on average for a list of {the_size} elements")
+        print("\n")
